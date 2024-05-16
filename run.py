@@ -1,28 +1,28 @@
 import random
 import time
 
+
 class Player:
     def __init__(self, name):
         """
         Initialize the player with name, health points, and initial states
         """
         self.name = name
-        self.hp = 100
+        self.health_points = 100
         self.princess_rescued = False
-        self.dragon_defeated = False
         self.has_magical_sword = False
+        self.dragon_defeated = False
 
     def fight_enemy(self):
         """
         Simulate a fight with an enemy, causing random damage to the player
         """
-        self.hp -= random.randint(10, 20)
-        if self.hp <= 0:
+        self.health_points -= random.randint(10, 20)
+        if self.health_points <= 0:
             print("Game Over! You were defeated in battle.")
             return False
-        else:
-            time.sleep(1)
-            return True
+        time.sleep(1)
+        return True
 
     def clear_trap(self):
         """
@@ -30,21 +30,20 @@ class Player:
         """
         if random.random() < 0.5:
             print("You triggered a trap and lost some health!")
-            self.hp -= random.randint(5, 10)
-            if self.hp <= 0:
+            self.health_points -= random.randint(5, 10)
+            if self.health_points <= 0:
                 print("Game Over! You were defeated by a trap.")
                 return False
             return True
-        else:
-            print("You failed to clear the trap!")
-            return True
+        print("You failed to clear the trap!")
+        return True
 
     def rest(self):
         """
         Simulate resting, with a chance to encounter a monster
         """
         if random.choice(["safe", "monster"]) == "safe":
-            self.hp = min(100, self.hp + 30)
+            self.health_points = min(100, self.health_points + 30)
             print("You found a safe spot to rest and restored 30 health points.")
         else:
             print("You encountered a monster while searching for a safe spot to rest!")
@@ -58,7 +57,8 @@ class Player:
         """
         Simulate an encounter, which can be a monster, a trap, or an empty room
         """
-        encounter_result = random.choice(["monster", "trap", "empty room"])
+        encounter_options = ["monster", "trap", "empty room", "sword"]
+        encounter_result = random.choice(encounter_options)
         if encounter_result == "monster":
             print("\nYou hear heavy footsteps approaching.")
             print("A grotesque creature emerges from the darkness!")
@@ -71,23 +71,12 @@ class Player:
             print("It's a concealed trap! You attempt to clear it...")
             if not self.clear_trap():
                 return False
+        elif encounter_result == "sword":
+            print("\nYou found a gleaming sword on the ground!")
+            self.has_magical_sword = True
         else:
             print("\nYou enter an empty room, taking a moment to catch your breath.")
         return True
-
-    def search_sword(self):
-        """
-        Simulate searching for the magical sword with a 50% chance of success
-        """
-        if not self.has_magical_sword:
-            if random.random() < 0.5:
-                print("\nYou've found the legendary magical sword!")
-                self.has_magical_sword = True
-                time.sleep(1)
-            else:
-                print("\nYou search but find nothing of significance.")
-        else:
-            print("\nYou already have the magical sword.")
 
     def fight_dragon(self):
         """
@@ -112,6 +101,7 @@ class Player:
             print("\nYou've already defeated the dragon!")
         return True
 
+
 def main():
     """
     Main function to start and run the game
@@ -120,22 +110,26 @@ def main():
     name = input("Enter your name:\n")
     player = Player(name)
 
-    print("\nYou find yourself in a dark and eerie dungeon filled with traps and monsters.")
+    print("\nYou find yourself in a dark and eerie dungeon filled with traps "
+          "and monsters.")
     print("Only the bravest warriors can rescue the princess.")
     print("Choose your path wisely, for danger lurks around every corner.\n")
 
     # Main game loop
-    while not player.princess_rescued and player.hp > 0:
-        print(f"\nHealth Points: {player.hp}")
+    while not player.princess_rescued and player.health_points > 0:
+        print(f"\nHealth Points: {player.health_points}")
         print("Choose your action:")
         print("1. Look for a safe spot to rest")
-        print("2. Follow the map to the dragon")
+        print("2. Explore the dungeon")
         if not player.has_magical_sword:
             print("3. Search for the magical sword")
         if player.has_magical_sword and not player.dragon_defeated:
             print("4. Fight the dragon")
 
-        choice = input("Enter your choice (1-4): ")
+        if not player.has_magical_sword:
+            choice = input("Enter your choice (1-3): ")
+        else:
+            choice = input("Enter your choice (1-4): ")
 
         # Process player's choice
         if choice == "1":
@@ -144,13 +138,13 @@ def main():
         elif choice == "2":
             if not player.encounter():
                 break
-        elif choice == "3":
-            player.search_sword()
+        elif choice == "3" and not player.has_magical_sword:
+            player.encounter()  # Since searching for sword is part of encountering
         elif choice == "4":
             if not player.fight_dragon():
                 break
         else:
-            print("Invalid choice. Please enter 1, 2, 3, or 4.")
+            print("Invalid choice. Please enter a valid option.")
 
     # Game conclusion messages
     if player.princess_rescued:
@@ -158,6 +152,7 @@ def main():
     else:
         print("\nGame Over! You have run out of health.")
     print("Thank you for playing the Fantasy Adventure Game!")
+
 
 if __name__ == "__main__":
     main()
