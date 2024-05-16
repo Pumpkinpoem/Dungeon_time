@@ -44,11 +44,11 @@ class Player:
         """
         if random.choice(["safe", "monster"]) == "safe":
             self.health_points = min(100, self.health_points + 30)
-            print("You found a safe spot to rest and restored 30 health points.")
+            print("Yay a safe spot to rest and restored 30 health points.")
         else:
-            print("You encountered a monster while searching for a safe spot to rest!")
+            print("Damit a monster found you!")
             if self.fight_enemy():
-                print("You defeated the monster, but your rest was interrupted.")
+                print("You slew the monster, but your rest was interrupted.")
             else:
                 return False
         return True
@@ -63,7 +63,7 @@ class Player:
             print("\nYou hear heavy footsteps approaching.")
             print("A grotesque creature emerges from the darkness!")
             if self.fight_enemy():
-                print("You skillfully defeat the monster, emerging victorious!")
+                print("You defeat the monster, emerging victorious!")
             else:
                 return False
         elif encounter_result == "trap":
@@ -75,12 +75,13 @@ class Player:
             print("\nYou found a gleaming sword on the ground!")
             self.has_magical_sword = True
         else:
-            print("\nYou enter an empty room, taking a moment to catch your breath.")
+            print("\nAn empty room, a good time to catch your breath.")
         return True
 
     def fight_dragon(self):
         """
-        Simulate the final battle with the dragon if the player has the magical sword
+        Simulate the final battle with the dragon if
+        the player has the magical sword
         """
         if self.has_magical_sword and not self.dragon_defeated:
             print("\nIt's time to face Valorin, the fierce green dragon!")
@@ -89,9 +90,9 @@ class Player:
             print("The clash of steel and scales echoes through the chamber.")
             if self.fight_enemy():
                 self.dragon_defeated = True
-                print("\nWith a final swing, you strike true, defeating Valorin.")
+                print("\nThe sword strikes true, defeating Valorin.")
                 time.sleep(1)
-                print("You find the princess, her eyes sparkling with gratitude.")
+                print("You find the princess, her eyes filled with gratitude.")
                 self.princess_rescued = True
             else:
                 return False
@@ -125,11 +126,9 @@ def main():
             print("3. Search for the magical sword")
         if player.has_magical_sword and not player.dragon_defeated:
             print("4. Fight the dragon")
+        print("5. Quit")  # Added quit option
 
-        if not player.has_magical_sword:
-            choice = input("Enter your choice (1-3): ")
-        else:
-            choice = input("Enter your choice (1-4): ")
+        choice = input("Enter your choice: ")
 
         # Process player's choice
         if choice == "1":
@@ -139,10 +138,13 @@ def main():
             if not player.encounter():
                 break
         elif choice == "3" and not player.has_magical_sword:
-            player.encounter()  # Since searching for sword is part of encountering
+            player.encounter()  # To look for the sword is part of encountering
         elif choice == "4":
             if not player.fight_dragon():
                 break
+        elif choice == "5":
+            print("Quitting the game...")
+            break
         else:
             print("Invalid choice. Please enter a valid option.")
 
